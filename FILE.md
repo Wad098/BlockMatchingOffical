@@ -32,7 +32,7 @@ This directory contains an optimized version of the GPU implementation.
 
 #### [`BlockMatchingGPU/pFrame/luck`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fhome%2Fwad098%2FBlockMatchingOffical%2FBlockMatchingGPU%2FpFrame%2Fluck%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%5D "/home/wad098/BlockMatchingOffical/BlockMatchingGPU/pFrame/luck")
 
-This directory contains another version of the GPU implementation.
+This directory contains the latest version of the GPU implementation.
 
 - [`luck_stream.cu`](command:_github.copilot.openSymbolInFile?%5B%22BlockMatchingGPU%2FpFrame%2Fluck%2Fluck_stream.cu%22%2C%22luck_stream.cu%22%5D "BlockMatchingGPU/pFrame/luck/luck_stream.cu"): This file contains another version of the block matching algorithm.
 
