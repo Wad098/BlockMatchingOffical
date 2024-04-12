@@ -1,9 +1,3 @@
-Determining workspace structure
-
-Deciding which workspace information to collect
-
-Gathering workspace info
-
 # CUDA Block Matching Project
 
 This project implements a CUDA-based block matching algorithm for motion estimation. The project is structured as follows:
