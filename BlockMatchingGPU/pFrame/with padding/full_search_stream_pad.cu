@@ -1,6 +1,6 @@
 // inherited from full_search2.cu
 // added stream
-#include "util.cu"
+#include "util_pad.cu"
 #include <stdio.h>
 #include <stdlib.h>
 #include <cuda_runtime.h>
@@ -181,15 +181,11 @@ void block_match_full_frame_stream(Frame* allYFrames) {
     unsigned char *d_temp_frame[STREAM_NUM]; // used for both prediction frame and reconst frame
     int *d_motion_vectors[STREAM_NUM];
 
-    // int padedWidth = WIDTH + 2 * PADDING;
-    // int padedHeight = HEIGHT + 2 * PADDING;
-
     int x_block_num = WIDTH / BLOCK_SIZE;
     int y_block_num = HEIGHT / BLOCK_SIZE;
 
-    //size_t pixel_num = WIDTH * HEIGHT;
-    size_t pixel_num = PADWIDTH * PADHEIGHT;
-    size_t gop_size = GOP * pixel_num;
+    //size_t pixel_num = PADWIDTH * PADHEIGHT;
+    //size_t gop_size = GOP * pixel_num;
     //size_t frame_size = WIDTH * HEIGHT * sizeof(unsigned char);
     size_t frame_pad_size = PADWIDTH * PADHEIGHT * sizeof(unsigned char);
     size_t sad_size = x_block_num * y_block_num * sizeof(int);
@@ -202,6 +198,7 @@ void block_match_full_frame_stream(Frame* allYFrames) {
         cudaMalloc((void **)&d_curr_frame[i], frame_pad_size);
         cudaMalloc((void **)&d_ref_frame[i], frame_pad_size);
         cudaMalloc((void **)&d_temp_frame[i], frame_pad_size);
+        cudaMemset(&d_temp_frame[i], 0, PADWIDTH * PADHEIGHT);
         cudaMalloc((void **)&d_motion_vectors[i], 2 * sad_size);
     }
 
@@ -225,7 +222,6 @@ void block_match_full_frame_stream(Frame* allYFrames) {
         firstPFrameReconstGPU<<<block, grid, 0, stream[i]>>>(d_curr_frame[i], d_ref_frame[i], d_temp_frame[i], d_motion_vectors[i]);
 
         //cudaMemcpyAsync(allRconstFrames + gop_size * i, d_temp_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-        //printf("%d 0\n", i);
     }
 
     for(int j = 1; j < GOP; j++) {
@@ -308,9 +304,6 @@ void block_match_full_frame_stream_save_reconst(Frame* allYFrames, unsigned char
         firstPFrameReconstGPU<<<block, grid, 0, stream[i]>>>(d_curr_frame[i], d_ref_frame[i], d_temp_frame[i], d_motion_vectors[i]);
 
         cudaMemcpyAsync(allRconstFrames + gop_size * i, d_temp_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-        //cudaMemcpyAsync(allRconstFrames + gop_size * i, d_curr_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-        //cudaMemcpyAsync(allRconstFrames + gop_size * i, d_curr_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-        //printf("%d 0\n", i);
     }
 
     for(int j = 1; j < GOP; j++) {
@@ -322,8 +315,6 @@ void block_match_full_frame_stream_save_reconst(Frame* allYFrames, unsigned char
             nextPFrameReconstGPU<<<block, grid, 0, stream[i]>>>(d_curr_frame[i], d_ref_frame[i], d_temp_frame[i], d_motion_vectors[i]);
             
             cudaMemcpyAsync(allRconstFrames + pixel_num * j + gop_size * i, d_temp_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-            //cudaMemcpyAsync(allRconstFrames + pixel_num * j + gop_size * i, d_curr_frame[i], frame_pad_size, cudaMemcpyDeviceToHost, stream[i]);
-        
         }
     }
     
@@ -348,10 +339,9 @@ int main()
     start = getTimeStamp();
 
     Frame* allYFrames = process_yuv_frames("long_input.yuv", WIDTH, HEIGHT, FRAME_NUM);
-    //int frameSize = WIDTH * HEIGHT;
 
-    int frameSize = PADWIDTH * PADHEIGHT;
-    unsigned char* allRconstFrames = (unsigned char*)malloc(FRAME_NUM * frameSize * sizeof(unsigned char));
+    //int frameSize = PADWIDTH * PADHEIGHT;
+    //unsigned char* allRconstFrames = (unsigned char*)malloc(FRAME_NUM * frameSize * sizeof(unsigned char));
 
     end = getTimeStamp();
     printf("File reading time: %f\n", end - start);
@@ -366,21 +356,15 @@ int main()
         printf("Failed to copy to symbol d_qMatrix: %s\n", cudaGetErrorString(err));
     }
     
-    block_match_full_frame_stream_save_reconst(allYFrames, allRconstFrames);
-    //block_match_full_frame_stream(allYFrames);
+    //block_match_full_frame_stream_save_reconst(allYFrames, allRconstFrames);
+    block_match_full_frame_stream(allYFrames);
 
-    /*
-    size_t frame_pad_size = PADWIDTH * PADHEIGHT * sizeof(unsigned char);
-    for (int i = 0 ; i < FRAME_NUM; i++) {
-        memcpy(allRconstFrames + i * frame_pad_size, allYFrames[i].y, frame_pad_size);
-    }
-    */
 
 
     end = getTimeStamp();
     printf("Processing time: %f\n", end - start);
 
-    /**/
+    /*
     FILE *recon_yFrameFile = fopen("AllReconYFrames.txt", "w"); 
     if (recon_yFrameFile == NULL) {
         printf("Error opening Y frame file.\n");
@@ -390,7 +374,7 @@ int main()
 
     fclose(recon_yFrameFile);
     free(allRconstFrames);
-    
+    */
 
     return 0;
 }
