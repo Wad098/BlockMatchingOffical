@@ -15,9 +15,11 @@
 #define FRAME_NUM 3000
 #define GOP 30
 #define STREAM_NUM (int)((FRAME_NUM + GOP - 1) / GOP)
-#define PADDING SEARCH_RANGE
-#define PADWIDTH WIDTH + 2 * PADDING
-#define PADHEIGHT HEIGHT + 2 * PADDING
+#define PADDING (int)SEARCH_RANGE
+#define PADWIDTH (int)(WIDTH + 2 * PADDING)
+#define PADHEIGHT (int)(HEIGHT + 2 * PADDING)
+//#define PADWIDTH WIDTH + 2 * PADDING
+//#define PADHEIGHT HEIGHT + 2 * PADDING
 
 __constant__ float d_qMatrix[BLOCK_SIZE][BLOCK_SIZE];
 

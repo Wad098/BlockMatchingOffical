@@ -382,7 +382,8 @@ int main()
     start = getTimeStamp();
 
     Frame* allYFrames = process_yuv_frames("long_input.yuv", WIDTH, HEIGHT, FRAME_NUM);
-    int frameSize = WIDTH * HEIGHT;
+    
+    //int frameSize = WIDTH * HEIGHT;
     //unsigned char* allRconstFrames = (unsigned char*)malloc(FRAME_NUM * frameSize);
 
     end = getTimeStamp();
