@@ -34,18 +34,3 @@ To run this project, you need to have the following prerequisites:
     make
     ```
 
-## Usage
-
-To use this project, follow these steps:
-
-1. Step 1
-2. Step 2
-3. Step 3
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
