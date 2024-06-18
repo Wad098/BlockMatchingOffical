@@ -1,6 +1,6 @@
 //inherited from full_search2.cu
 //added str
-// test 12/10/2021
+// test 12/10/202122
 
 #include <stdio.h>
 #include <stdlib.h>
