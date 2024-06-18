@@ -1,5 +1,5 @@
 //inherited from full_search2.cu
-//added stream
+//added str
 
 #include <stdio.h>
 #include <stdlib.h>
